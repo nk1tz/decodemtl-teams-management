@@ -12,7 +12,6 @@ const REMOVE = 'teams/REMOVE';
 const dbTeamsRef = database.ref('teams/')
 
 
-
 export default function teams(state = [], action = {}) {
   switch (action.type) {
     case LOAD:

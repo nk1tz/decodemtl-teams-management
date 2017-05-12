@@ -1,5 +1,4 @@
 import React, { Component, Proptypes } from 'react';
-import R from 'ramda'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -36,7 +35,6 @@ class ProjectTeams extends Component {
   
   
   render() {
-    console.log("Props on ProjectTeams ",this.props)
     return (
       <div className="projects">
         <div className="projects-container">

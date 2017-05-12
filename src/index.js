@@ -37,7 +37,7 @@ const routes = (
         <Route path="/projects" component={Projects} />
         <Route path="/projects/:projectSlug" component={ProjectTeams}/>
         <Route path="/projects/:projectSlug/:teamSlug" component={Team}/>
-        
+
       </Route>
     </Router>
   </Provider>
