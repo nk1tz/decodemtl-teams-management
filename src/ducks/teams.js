@@ -28,9 +28,8 @@ export default function teams(state = [], action = {}) {
 
 export function loadTeams(projectSlug) {
   return (dispatch) => {
-    dbTeamsRef.equalTo(projectSlug, "projectSlug").once('value', (snapshot) => {
+    dbTeamsRef.orderByChild("projectSlug").equalTo(projectSlug).once('value', (snapshot) => {
       let teams = R.values(snapshot.val())
-      console.log(teams)
       dispatch({ type: LOAD, teams })
     })
   }

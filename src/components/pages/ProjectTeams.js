@@ -36,7 +36,7 @@ class ProjectTeams extends Component {
   
   
   render() {
-    console.log(this.props)
+    console.log("Props on ProjectTeams ",this.props)
     return (
       <div className="projects">
         <div className="projects-container">
