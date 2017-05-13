@@ -26,7 +26,7 @@ export default function projects(state = [], action = {}) {
 
 export function loadProjects() {
   return (dispatch) => {
-    dbProjectsRef.once('value', (snapshot) => {
+    return dbProjectsRef.once('value', (snapshot) => {
       let projects = R.values(snapshot.val())
       dispatch({ type: LOAD, projects })
     })

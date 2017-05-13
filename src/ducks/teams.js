@@ -1,5 +1,6 @@
 import R from 'ramda'
 import slug from 'slug'
+import { selectCurrentProject } from './index'
 import database from '../firebase'
 
 // teams.js
@@ -25,12 +26,16 @@ export default function teams(state = [], action = {}) {
   }
 }
 
-export function loadTeams(projectSlug) {
-  return (dispatch) => {
-    dbTeamsRef.orderByChild("projectSlug").equalTo(projectSlug).once('value', (snapshot) => {
-      let teams = R.values(snapshot.val())
-      dispatch({ type: LOAD, teams })
-    })
+export function loadTeams() {
+  return (dispatch, getState) => {
+    let currentProject = selectCurrentProject(getState())
+    
+    if (currentProject) {
+      dbTeamsRef.orderByChild("projectSlug").equalTo(currentProject.slug).once('value', (snapshot) => {
+        let teams = R.values(snapshot.val())
+        dispatch({ type: LOAD, teams })
+      })
+    }
   }
 }
 

@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux'
 import { selectCurrentTeam } from '../../ducks'
 import './Team.css';
 
-console.log(selectCurrentTeam)
 
 function mapStateToProps(state) {
   return {

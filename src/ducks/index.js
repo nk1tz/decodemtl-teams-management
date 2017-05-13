@@ -18,7 +18,7 @@ export const selectProjectList = (state) => state.projects
 export const selectCurrentProject = createSelector(
   selectCurrentLocation, selectProjectList,
   (currentLocation, projectList) => {
-    let projectSlug = currentLocation.split('/')[1]
+    let projectSlug = currentLocation.split('/')[2]
     let currentProject = projectList.find(p => p.slug === projectSlug)
     return currentProject
   }
@@ -27,8 +27,8 @@ export const selectCurrentProject = createSelector(
 export const selectCurrentTeam = createSelector(
   selectCurrentLocation, selectTeamList,
   (currentLocation, teamList) => {
-    let teamSlug = currentLocation.split('/')[2]
-    let projectSlug = currentLocation.split('/')[1]
+    let teamSlug = currentLocation.split('/')[3]
+    let projectSlug = currentLocation.split('/')[2]
     let currentTeam = teamList.find(t => t.slug===teamSlug && t.projectSlug===projectSlug)
     return currentTeam
   }

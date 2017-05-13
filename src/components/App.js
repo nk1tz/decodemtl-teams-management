@@ -1,12 +1,28 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { loadProjects } from '../ducks/projects'
+import { loadTeams } from '../ducks/teams'
+
+
 import './App.css'
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-export default class extends Component {
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loadProjects, loadTeams }, dispatch)
+}
+
+class App extends Component {
+  
+  componentWillMount() {
+    this.props.loadProjects()
+    .then(this.props.loadTeams)
+  }
   
   _renderBreadCrumbs = () => {
     let path = ""
@@ -30,3 +46,5 @@ export default class extends Component {
     );
   }
 }
+
+export default connect(null, mapDispatchToProps)(App)
