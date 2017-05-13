@@ -2,24 +2,22 @@ import React, { Component } from 'react';
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { loadTeam } from '../../ducks/currentTeam'
+import { selectCurrentTeam } from '../../ducks'
 import './Team.css';
+
+console.log(selectCurrentTeam)
 
 function mapStateToProps(state) {
   return {
-    currentTeam: state.currentTeam
+    currentTeam: selectCurrentTeam(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ loadTeam }, dispatch)
+  // return bindActionCreators({ loadTeam }, dispatch)
 }
 
 class Team extends Component {
-  
-  componentDidMount() {
-    this.props.loadTeam(this.props.params.teamSlug)
-  }
   
   render() {
     let { currentTeam, params } = this.props
@@ -40,4 +38,4 @@ class Team extends Component {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Team)
+export default connect(mapStateToProps)(Team)

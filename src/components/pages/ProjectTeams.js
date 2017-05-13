@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch) {
 
 class ProjectTeams extends Component {
   
-  componentDidMount() {
+  componentWillMount() {
     this.props.loadTeams(this.props.params.projectSlug)
   }
   
