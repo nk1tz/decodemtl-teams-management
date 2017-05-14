@@ -37,6 +37,8 @@ export function createProject(project) {
   const newProjectsRef = dbProjectsRef.push()
   project.id = newProjectsRef.key
   project.slug = slug(project.name)
+  project.creditWorth = 15
+  project.creditCooldown = 60
   return (dispatch) => {
     newProjectsRef.set(project)
     dispatch({ type: CREATE, project })
@@ -44,7 +46,11 @@ export function createProject(project) {
 }
 
 export function updateProject(project) {
-  return { type: UPDATE, project };
+  return (dispatch) => {
+    database.ref('projects/'+project.id).update(project).once('value', (snapshot) => {
+      dispatch({ type: UPDATE, project })
+    })
+  }
 }
 
 export function removeProject(project) {

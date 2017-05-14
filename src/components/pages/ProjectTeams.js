@@ -3,12 +3,14 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createTeam, loadTeams } from '../../ducks/teams'
+import { selectCurrentProject } from '../../ducks'
 import TeamCard from '../elements/TeamCard'
 import './ProjectTeams.css';
 
 function mapStateToProps(state) {
   return {
     teams: state.teams
+    currentProject: selectCurrentProject(state)
   }
 }
 
@@ -35,8 +37,21 @@ class ProjectTeams extends Component {
   
   
   render() {
+    // const { creditWorth, creditCooldown } = this.props.currentProject
     return (
       <div className="projects">
+        <h3>Project Settings:
+          <span>
+            Credit worth:
+            <input ref="creditWorth" onKeyUp={this.handleUpdate}/>
+            minutes
+          </span>
+          <span>
+            Credit cooldown:
+            <input ref="creditCooldown" onKeyUp={this.handleUpdate}/>
+            minutes
+          </span>
+        </h3>
         <div className="projects-container">
           {this.props.teams.map(t => <TeamCard key={t.id} team={t}/>)}
         </div>
