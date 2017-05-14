@@ -3,25 +3,43 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createTeam, loadTeams } from '../../ducks/teams'
+import { updateProject } from '../../ducks/projects'
 import { selectCurrentProject } from '../../ducks'
 import TeamCard from '../elements/TeamCard'
 import './ProjectTeams.css';
 
 function mapStateToProps(state) {
   return {
-    teams: state.teams
+    teams: state.teams,
     currentProject: selectCurrentProject(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createTeam, loadTeams }, dispatch)
+  return bindActionCreators({ createTeam, loadTeams, updateProject }, dispatch)
 }
 
 class ProjectTeams extends Component {
   
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadTeams(this.props.params.projectSlug)
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if (this.props.currentProject !== nextProps.currentProject) {
+      this._populateInputs(nextProps)
+    }
+  }
+  
+  componentDidUpdate() {
+    if (!this.refs.creditWorth.value && !this.refs.creditCooldown.value) {
+      if (this.props.currentProject) this._populateInputs(this.props)
+    }
+  }
+  
+  _populateInputs = (props) => {
+    this.refs.creditWorth.value = props.currentProject.creditWorth
+    this.refs.creditCooldown.value = props.currentProject.creditCooldown
   }
   
   _handleCreateTeam = () => {
@@ -35,20 +53,28 @@ class ProjectTeams extends Component {
   
   _handleEnter = e => e.keyCode === 13 ? this._handleCreateTeam() : null
   
+  _handleUpdate = (e) => {
+    if (e.keyCode === 13) {
+      const { currentProject } = this.props
+      const creditWorth = this.refs.creditWorth.value
+      const creditCooldown = this.refs.creditCooldown.value
+      let project = Object.assign({}, currentProject, {creditWorth, creditCooldown})
+      this.props.updateProject(project)
+    }
+  }
   
   render() {
-    // const { creditWorth, creditCooldown } = this.props.currentProject
     return (
       <div className="projects">
         <h3>Project Settings:
           <span>
             Credit worth:
-            <input ref="creditWorth" onKeyUp={this.handleUpdate}/>
+            <input ref="creditWorth" onKeyUp={this._handleUpdate}/>
             minutes
           </span>
           <span>
             Credit cooldown:
-            <input ref="creditCooldown" onKeyUp={this.handleUpdate}/>
+            <input ref="creditCooldown" onKeyUp={this._handleUpdate}/>
             minutes
           </span>
         </h3>

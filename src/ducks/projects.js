@@ -19,6 +19,8 @@ export default function projects(state = [], action = {}) {
       return [...state, action.project]
     case REMOVE:
       return R.remove(R.indexOf(action.project, state), 1, state)
+    case UPDATE:
+      return R.update(R.findIndex(R.propEq('id', action.project.id), state), action.project, state)
     default:
       return state
   }
@@ -41,15 +43,17 @@ export function createProject(project) {
   project.creditCooldown = 60
   return (dispatch) => {
     newProjectsRef.set(project)
-    dispatch({ type: CREATE, project })
+    .then(() => dispatch({ type: CREATE, project }))
   }
 }
 
 export function updateProject(project) {
   return (dispatch) => {
-    database.ref('projects/'+project.id).update(project).once('value', (snapshot) => {
-      dispatch({ type: UPDATE, project })
-    })
+    var updates = {};
+    console.log(project)
+    updates['projects/' + project.id] = project
+    database.ref().update(updates)
+    .then(() => dispatch({ type: UPDATE, project }))
   }
 }
 
