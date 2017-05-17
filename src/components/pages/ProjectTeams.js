@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createTeam, loadTeams } from '../../ducks/teams'
 import { updateProject } from '../../ducks/projects'
-import { selectCurrentProject } from '../../ducks'
+import { selectCurrentProject, selectCurrentProjectTeams } from '../../ducks'
 import TeamCard from '../elements/TeamCard'
 import './ProjectTeams.css';
 
 function mapStateToProps(state) {
   return {
-    teams: state.teams,
+    teams: selectCurrentProjectTeams(state),
     currentProject: selectCurrentProject(state)
   }
 }
@@ -20,26 +20,22 @@ function mapDispatchToProps(dispatch) {
 }
 
 class ProjectTeams extends Component {
+  state = {
+    creditWorth: "",
+    creditCooldown: ""
+  }
   
   componentDidMount() {
-    this.props.loadTeams(this.props.params.projectSlug)
+    this.props.loadTeams()
   }
   
   componentWillReceiveProps(nextProps) {
     if (this.props.currentProject !== nextProps.currentProject) {
-      this._populateInputs(nextProps)
+      this.setState({
+        creditWorth: nextProps.currentProject.creditWorth,
+        creditCooldown: nextProps.currentProject.creditCooldown
+      })
     }
-  }
-  
-  componentDidUpdate() {
-    if (!this.refs.creditWorth.value && !this.refs.creditCooldown.value) {
-      if (this.props.currentProject) this._populateInputs(this.props)
-    }
-  }
-  
-  _populateInputs = (props) => {
-    this.refs.creditWorth.value = props.currentProject.creditWorth
-    this.refs.creditCooldown.value = props.currentProject.creditCooldown
   }
   
   _handleCreateTeam = () => {
@@ -63,18 +59,28 @@ class ProjectTeams extends Component {
     }
   }
   
+  _handleCreditWorthTyping = ({target: {value}}) => this.setState({creditWorth: value})
+  _handleCreditCooldownTyping = ({target: {value}}) => this.setState({creditCooldown: value})
+  
   render() {
+    const { creditWorth, creditCooldown } = this.state
     return (
       <div className="projects">
         <h3>Project Settings:
           <span>
             Credit worth:
-            <input ref="creditWorth" onKeyUp={this._handleUpdate}/>
+            <input
+              value={creditWorth}
+              onChange={this._handleCreditWorthTyping}
+            />
             minutes
           </span>
           <span>
             Credit cooldown:
-            <input ref="creditCooldown" onKeyUp={this._handleUpdate}/>
+            <input
+              value={creditCooldown}
+              onChange={this._handleCreditCooldownTyping}
+            />
             minutes
           </span>
         </h3>

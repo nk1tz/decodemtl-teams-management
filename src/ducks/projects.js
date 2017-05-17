@@ -1,4 +1,3 @@
-import R from 'ramda'
 import slug from 'slug'
 import database from '../firebase'
 // projects.js
@@ -11,25 +10,36 @@ const REMOVE = 'projects/REMOVE';
 const dbProjectsRef = database.ref('projects/')
 
 
-export default function projects(state = [], action = {}) {
+// dbProjectsRef.on('value', (snapshot) => {
+//   const projects = snapshot.val()
+//   // loadAllProjects(projects)
+// });
+
+export default function projects(state = {}, action = {}) {
   switch (action.type) {
     case LOAD:
       return action.projects
     case CREATE:
-      return [...state, action.project]
-    case REMOVE:
-      return R.remove(R.indexOf(action.project, state), 1, state)
+      return Object.assign({}, state, action.project)
+    // case REMOVE:
+    //   return R.remove(R.indexOf(action.project, state), 1, state)
     case UPDATE:
-      return R.update(R.findIndex(R.propEq('id', action.project.id), state), action.project, state)
+      return Object.assign({}, state, action.project)
     default:
       return state
   }
 }
 
+// function loadAllProjects(projects) {
+//   return (dispatch) => {
+//     dispatch({ type: LOAD, projects })
+//   }
+// }
+
 export function loadProjects() {
   return (dispatch) => {
     return dbProjectsRef.once('value', (snapshot) => {
-      let projects = R.values(snapshot.val())
+      let projects = snapshot.val()
       dispatch({ type: LOAD, projects })
     })
   }
@@ -43,17 +53,23 @@ export function createProject(project) {
   project.creditCooldown = 60
   return (dispatch) => {
     newProjectsRef.set(project)
-    .then(() => dispatch({ type: CREATE, project }))
+    newProjectsRef.once('value', (snapshot) => {
+      let project = {[snapshot.val().id] : snapshot.val()}
+      dispatch({ type: CREATE, project})
+    })
   }
 }
 
-export function updateProject(project) {
+export function changeCreditWorth(projectId, creditWorth) {
   return (dispatch) => {
     var updates = {};
-    console.log(project)
-    updates['projects/' + project.id] = project
-    database.ref().update(updates)
-    .then(() => dispatch({ type: UPDATE, project }))
+    const projectRef = database.ref('projects/' + projectId)
+    projectRef.update({creditWorth})
+    projectRef.once('value', (snapshot) => {
+      let project = snapshot.val()
+      console.log(project)
+      dispatch({ type: UPDATE, project })
+    })
   }
 }
 

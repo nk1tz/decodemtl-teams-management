@@ -4,12 +4,13 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createProject, loadProjects } from '../../ducks/projects'
+import { selectProjectsList } from '../../ducks'
 import ProjectCard from '../elements/ProjectCard'
 import './Projects.css';
 
 function mapStateToProps(state) {
   return {
-    projects: state.projects
+    projects: selectProjectsList(state)
   }
 }
 
@@ -20,7 +21,7 @@ function mapDispatchToProps(dispatch) {
 class Projects extends Component {
   
   componentDidMount() {
-    this.props.loadProjects(this.props.params.projectSlug)
+    this.props.loadProjects()
   }
   
   _handleCreateProject = () => {

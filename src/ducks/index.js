@@ -3,7 +3,6 @@ import { createSelector } from 'reselect'
 import projects from './projects'
 import teams from './teams'
 
-
 export default {
   projects,
   teams
@@ -11,25 +10,36 @@ export default {
 
 export const selectCurrentLocation = (state) => state.routing.locationBeforeTransitions.pathname
 
-export const selectTeamList = (state) => state.teams
+export const selectTeams = (state) => state.teams
 
-export const selectProjectList = (state) => state.projects
+export const selectProjects = (state) => state.projects
+
+export const selectTeamsList = (state) => R.values(state.teams)
+
+export const selectProjectsList = (state) => R.values(state.projects)
+
 
 export const selectCurrentProject = createSelector(
-  selectCurrentLocation, selectProjectList,
-  (currentLocation, projectList) => {
+  [selectCurrentLocation, selectProjects],
+  (currentLocation, projects) => {
     let projectSlug = currentLocation.split('/')[2]
-    let currentProject = projectList.find(p => p.slug === projectSlug)
-    return currentProject
+    return R.find(R.propEq('slug', projectSlug))(R.values(projects))
+  }
+)
+
+export const selectCurrentProjectTeams = createSelector(
+  [selectCurrentLocation, selectTeams],
+  (currentLocation, teams) => {
+    let projectSlug = currentLocation.split('/')[2]
+    return R.filter(t => t.projectSlug===projectSlug, R.values(teams))
   }
 )
 
 export const selectCurrentTeam = createSelector(
-  selectCurrentLocation, selectTeamList,
-  (currentLocation, teamList) => {
+  [selectCurrentLocation, selectTeams],
+  (currentLocation, teams) => {
     let teamSlug = currentLocation.split('/')[3]
     let projectSlug = currentLocation.split('/')[2]
-    let currentTeam = teamList.find(t => t.slug===teamSlug && t.projectSlug===projectSlug)
-    return currentTeam
+    return R.find(R.propEq('projectSlug', projectSlug))(R.values(teams))
   }
 )
