@@ -66,12 +66,24 @@ export function changeCreditWorth(projectId, creditWorth) {
     const projectRef = database.ref('projects/' + projectId)
     projectRef.update({creditWorth})
     projectRef.once('value', (snapshot) => {
-      let project = snapshot.val()
-      console.log(project)
+      let project = {[snapshot.val().id] : snapshot.val()}
       dispatch({ type: UPDATE, project })
     })
   }
 }
+
+export function changeCreditCooldown(projectId, creditCooldown) {
+  return (dispatch) => {
+    var updates = {};
+    const projectRef = database.ref('projects/' + projectId)
+    projectRef.update({creditCooldown})
+    projectRef.once('value', (snapshot) => {
+      let project = {[snapshot.val().id] : snapshot.val()}
+      dispatch({ type: UPDATE, project })
+    })
+  }
+}
+
 
 export function removeProject(project) {
   return { type: REMOVE, project };

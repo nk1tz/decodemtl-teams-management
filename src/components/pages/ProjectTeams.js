@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createTeam, loadTeams } from '../../ducks/teams'
-import { updateProject } from '../../ducks/projects'
+import { changeCreditCooldown, changeCreditWorth } from '../../ducks/projects'
 import { selectCurrentProject, selectCurrentProjectTeams } from '../../ducks'
 import TeamCard from '../elements/TeamCard'
 import './ProjectTeams.css';
@@ -16,13 +16,15 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ createTeam, loadTeams, updateProject }, dispatch)
+  return bindActionCreators({
+    createTeam, loadTeams, changeCreditWorth, changeCreditCooldown
+  }, dispatch)
 }
 
 class ProjectTeams extends Component {
   state = {
-    creditWorth: "",
-    creditCooldown: ""
+    creditWorth: this.props.currentProject ? this.props.currentProject.creditWorth : "",
+    creditCooldown: this.props.currentProject ? this.props.currentProject.creditCooldown : ""
   }
   
   componentDidMount() {
@@ -30,7 +32,10 @@ class ProjectTeams extends Component {
   }
   
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentProject !== nextProps.currentProject) {
+    const { currentProject } = this.props
+    if (currentProject !== nextProps.currentProject
+        || currentProject.creditWorth !== nextProps.currentProject.creditWorth
+        || currentProject.creditCooldown !== nextProps.currentProject.creditCooldown) {
       this.setState({
         creditWorth: nextProps.currentProject.creditWorth,
         creditCooldown: nextProps.currentProject.creditCooldown
@@ -49,13 +54,16 @@ class ProjectTeams extends Component {
   
   _handleEnter = e => e.keyCode === 13 ? this._handleCreateTeam() : null
   
-  _handleUpdate = (e) => {
+  _updateCreditWorthOnEnter = (e) => {
     if (e.keyCode === 13) {
-      const { currentProject } = this.props
-      const creditWorth = this.refs.creditWorth.value
-      const creditCooldown = this.refs.creditCooldown.value
-      let project = Object.assign({}, currentProject, {creditWorth, creditCooldown})
-      this.props.updateProject(project)
+      const { currentProject, changeCreditWorth } = this.props
+      changeCreditWorth(currentProject.id, this.state.creditWorth)
+    }
+  }
+  _updateCreditCooldownOnEnter = (e) => {
+    if (e.keyCode === 13) {
+      const { currentProject, changeCreditCooldown } = this.props
+      changeCreditCooldown(currentProject.id, this.state.creditCooldown)
     }
   }
   
@@ -70,16 +78,18 @@ class ProjectTeams extends Component {
           <span>
             Credit worth:
             <input
-              value={creditWorth}
-              onChange={this._handleCreditWorthTyping}
+              value={ creditWorth }
+              onChange={ this._handleCreditWorthTyping }
+              onKeyUp={ this._updateCreditWorthOnEnter }
             />
             minutes
           </span>
           <span>
             Credit cooldown:
             <input
-              value={creditCooldown}
-              onChange={this._handleCreditCooldownTyping}
+              value={ creditCooldown }
+              onChange={ this._handleCreditCooldownTyping }
+              onKeyUp={ this._updateCreditCooldownOnEnter }
             />
             minutes
           </span>
