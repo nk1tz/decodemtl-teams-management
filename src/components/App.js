@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import { Breadcrumb, MenuItem, Button } from 'react-materialize'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadProjects } from '../ducks/projects'
@@ -26,11 +27,16 @@ class App extends Component {
   
   _renderBreadCrumbs = () => {
     let path = ""
-    return this.props.router.location.pathname.split("/").filter(x=>x!=="")
-    .map((p,i) => {
-      path += '/'+p
-      return <Link key={p} to={path}>{i?'>':''} {p.capitalize()} </Link>
-    })
+    return (
+      <Breadcrumb>
+        {this.props.router.location.pathname.split("/").filter(x=>x!=="")
+          .map((p,i) => {
+            path += '/'+p
+              return <Link key={p} to={path}>{p.capitalize()}</Link>
+          })
+        }
+      </Breadcrumb>
+    )
   }
   
   render() {
@@ -40,7 +46,9 @@ class App extends Component {
         <div className="App-header">
           <h2>Welcome to the DecodeMTL Teams Management Utility</h2>
         </div>
+
         {this._renderBreadCrumbs()}
+
         {this.props.children}
       </div>
     );
