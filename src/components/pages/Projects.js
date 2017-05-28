@@ -3,6 +3,7 @@ import R from 'ramda'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Input } from 'react-materialize'
 import { createProject, loadProjects } from '../../ducks/projects'
 import { selectProjectsList } from '../../ducks'
 import ProjectCard from '../elements/ProjectCard'
@@ -25,8 +26,9 @@ class Projects extends Component {
   }
   
   _handleCreateProject = () => {
-     let { name: {value: name}, desc: {value: desc} } = this.refs
-     if (name && desc) {
+    let name = this.refs.name.state.value;
+    let desc = this.refs.desc.state.value;
+    if (name && desc) {
        this.props.createProject({ name, desc })
      }
   }
@@ -43,8 +45,8 @@ class Projects extends Component {
         {this.props.children}
         <div className="create-project">
           <h2>Create New Project:</h2>
-          <input ref="name" type="text" onKeyUp={this._handleEnter}/>
-          <textarea ref="desc" type="text" onKeyUp={this._handleEnter}/>
+          <Input ref="name" label="Project Name" onKeyUp={this._handleEnter}/>
+          <Input ref="desc" label="Description" onKeyUp={this._handleEnter}/>
           <button onClick={this._handleCreateProject}>Create</button>
         </div>
       </div>
