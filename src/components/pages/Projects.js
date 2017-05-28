@@ -3,7 +3,7 @@ import R from 'ramda'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Input } from 'react-materialize'
+import { Input, Row } from 'react-materialize'
 import { createProject, loadProjects } from '../../ducks/projects'
 import { selectProjectsList } from '../../ducks'
 import ProjectCard from '../elements/ProjectCard'
@@ -35,13 +35,12 @@ class Projects extends Component {
   
   _handleEnter = e => e.keyCode === 13 ? this._handleCreateProject() : null
   
-  
   render() {
     return (
       <div className="projects">
-        <div className="projects-container">
+        <Row className="projects-container">
           {this.props.projects.map(p => <ProjectCard key={p.id} project={p}/>)}
-        </div>
+        </Row>
         {this.props.children}
         <div className="create-project">
           <h2>Create New Project:</h2>
@@ -50,9 +49,9 @@ class Projects extends Component {
           <button onClick={this._handleCreateProject}>Create</button>
         </div>
       </div>
-      
     );
   }
+  
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects)

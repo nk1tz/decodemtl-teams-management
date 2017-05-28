@@ -4,13 +4,13 @@ import { Card, Col } from 'react-materialize'
 
 
 export default (props) => (
-    <Col m={4} s={12}>
+    <Col s={12} m={6} l={4}>
       <Link to={`/projects/${props.project.slug}`} className="project-card">
         <Card className='blue-grey darken-1' textClassName='white-text'
           title={props.project.name}
           // actions={[<a href='#'>This is a link</a>]}
         >
-          {props.project.name}
+          {props.project.desc}
         </Card>
       </Link>
     </Col>
