@@ -10,7 +10,11 @@ export default (props) => (
           title={props.project.name}
           // actions={[<a href='#'>This is a link</a>]}
         >
-          {props.project.desc}
+          <p>{props.project.desc}</p>
+          {/* <p>
+            <span>Credit Worth: {props.project.creditWorth} mins</span>
+            <span> Credit Cooldown: {props.project.creditCooldown} mins</span>
+          </p> */}
         </Card>
       </Link>
     </Col>

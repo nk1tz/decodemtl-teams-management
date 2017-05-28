@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Input, Row } from 'react-materialize'
+import { ChromePicker } from 'react-color';
 import { createProject, loadProjects } from '../../ducks/projects'
 import { selectProjectsList } from '../../ducks'
 import ProjectCard from '../elements/ProjectCard'
@@ -20,6 +21,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Projects extends Component {
+  state = {
+    projectColor: '#fff',
+  };
   
   componentDidMount() {
     this.props.loadProjects()
@@ -28,12 +32,17 @@ class Projects extends Component {
   _handleCreateProject = () => {
     let name = this.refs.name.state.value;
     let desc = this.refs.desc.state.value;
+    let color = this.state.projectColor;
     if (name && desc) {
-       this.props.createProject({ name, desc })
+       this.props.createProject({ name, desc, color})
      }
   }
   
   _handleEnter = e => e.keyCode === 13 ? this._handleCreateProject() : null
+  
+  handleChangeComplete = (color) => {
+    this.setState({ projectColor: color.hex });
+  };
   
   render() {
     return (
@@ -46,6 +55,10 @@ class Projects extends Component {
           <h2>Create New Project:</h2>
           <Input ref="name" label="Project Name" onKeyUp={this._handleEnter}/>
           <Input ref="desc" label="Description" onKeyUp={this._handleEnter}/>
+          <ChromePicker
+            color={ this.state.background }
+            onChangeComplete={ this.handleChangeComplete }
+          />
           <button onClick={this._handleCreateProject}>Create</button>
         </div>
       </div>
